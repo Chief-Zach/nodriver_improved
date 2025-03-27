@@ -26,14 +26,17 @@ is to keep it short and simple, so you can quickly open an editor or interactive
 type or paste a few lines and off you go.
 
 ```python
-import nodriver as uc
+import nodriver_improved as uc
+
 
 async def main():
-
     browser = await uc.start()
     page = await browser.get('https://www.nowsecure.nl')
 
-    ... further code ...
+    ...
+    further
+    code...
+
 
 if __name__ == '__main__':
     # since asyncio.run never worked (for me)
@@ -119,7 +122,7 @@ import logging
 
 logging.basicConfig(level=30)
 
-import nodriver as uc
+import nodriver_improved as uc
 
 months = [
     "january",

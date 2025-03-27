@@ -113,7 +113,8 @@ type or paste a few lines and off you go.
 
 ```python
 import asyncio
-import nodriver as uc
+import nodriver_improved as uc
+
 
 async def main():
     browser = await uc.start()
@@ -130,16 +131,15 @@ async def main():
     page3 = await browser.get('https://github.com/ultrafunkamsterdam/nodriver', new_window=True)
 
     for p in (page, page2, page3):
-       await p.bring_to_front()
-       await p.scroll_down(200)
-       await p   # wait for events to be processed
-       await p.reload()
-       if p != page3:
-           await p.close()
+        await p.bring_to_front()
+        await p.scroll_down(200)
+        await p  # wait for events to be processed
+        await p.reload()
+        if p != page3:
+            await p.close()
 
 
 if __name__ == '__main__':
-
     # since asyncio.run never worked (for me)
     uc.loop().run_until_complete(main())
 ```
@@ -154,7 +154,7 @@ import logging
 
 logging.basicConfig(level=30)
 
-import nodriver as uc
+import nodriver_improved as uc
 
 months = [
     "january",

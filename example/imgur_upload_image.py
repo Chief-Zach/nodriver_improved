@@ -1,11 +1,11 @@
 try:
-    from nodriver import *
+    from nodriver_improved import *
 except (ModuleNotFoundError, ImportError):
     import os
     import sys
 
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-    from nodriver import *
+    from nodriver_improved import *
 
 from pathlib import Path
 
@@ -17,13 +17,13 @@ DELAY = 2
 
 
 try:
-    from nodriver import *
+    from nodriver_improved import *
 except (ModuleNotFoundError, ImportError):
     import os
     import sys
 
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-    from nodriver import *
+    from nodriver_improved import *
 
 
 async def main():

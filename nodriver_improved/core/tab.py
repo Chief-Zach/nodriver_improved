@@ -14,7 +14,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Generator, List, Optional, Tuple, Union
 
-import nodriver.core.browser
+import nodriver_improved.core.browser
 
 from .. import cdp
 from . import element, util
@@ -154,14 +154,14 @@ class Tab(Connection):
     you can act upon.
     """
 
-    browser: nodriver.core.browser.Browser
+    browser: nodriver_improved.core.browser.Browser
     _download_behavior: List[str] = None
 
     def __init__(
         self,
         websocket_url: str,
         target: cdp.target.TargetInfo,
-        browser: Optional["nodriver.Browser"] = None,
+        browser: Optional["nodriver_improved.Browser"] = None,
         **kwargs,
     ):
         super().__init__(websocket_url, target, browser, **kwargs)
@@ -255,7 +255,7 @@ class Tab(Connection):
         self,
         selector: str,
         timeout: Union[int, float] = 10,
-    ) -> nodriver.Element:
+    ) -> nodriver_improved.Element:
         """
         find single element by css selector.
         can also be used to wait for such element to appear.
@@ -285,7 +285,7 @@ class Tab(Connection):
         self,
         text: str,
         timeout: Union[int, float] = 10,
-    ) -> List[nodriver.Element]:
+    ) -> List[nodriver_improved.Element]:
         """
         find multiple elements by text
         can also be used to wait for such element to appear.
@@ -312,7 +312,7 @@ class Tab(Connection):
 
     async def select_all(
         self, selector: str, timeout: Union[int, float] = 10, include_frames=False
-    ) -> List[nodriver.Element]:
+    ) -> List[nodriver_improved.Element]:
         """
         find multiple elements by css selector.
         can also be used to wait for such element to appear.
@@ -487,6 +487,59 @@ class Tab(Connection):
         if not node:
             return
         return element.create(node, self, doc)
+
+    async def timed_query_selector(
+            self,
+            selector: str,
+            _node: Optional[Union[cdp.dom.Node, element.Element]] = None,
+            timeout: Union[int, float] = 5
+    ):
+        """
+        find single element based on css selector string with a timeout similar to find and find_all
+
+        :param selector: css selector(s)
+        :type selector: str
+        :return:
+        :rtype:
+        """
+        loop = asyncio.get_running_loop()
+        start_time = loop.time()
+
+        selector = selector.strip()
+
+        response = await self.query_selector(selector, _node)
+
+        while not response:
+            await self
+            response = await self.query_selector(selector, _node)
+
+            if loop.time() - start_time > timeout:
+                return response
+            await self.sleep(0.5)
+
+        return response
+    async def timed_query_selector_all(
+            self,
+            selector: str,
+            _node: Optional[Union[cdp.dom.Node, "element.Element"]] = None,
+            timeout: Union[int, float] = 5
+    ):
+        loop = asyncio.get_running_loop()
+        start_time = loop.time()
+
+        selector = selector.strip()
+
+        response = await self.query_selector_all(selector, _node)
+
+        while not response:
+            await self
+            response = await self.query_selector_all(selector, _node)
+
+            if loop.time() - start_time > timeout:
+                return response
+            await self.sleep(0.5)
+
+        return response
 
     async def find_elements_by_text(
         self,
@@ -1361,7 +1414,7 @@ class Tab(Connection):
         )
         self._download_behavior = ["allow", str(path.resolve())]
 
-    async def get_all_linked_sources(self) -> List["nodriver.Element"]:
+    async def get_all_linked_sources(self) -> List["nodriver_improved.Element"]:
         """
         get all elements of tag: link, a, img, scripts meta, video, audio
 
